@@ -1,25 +1,18 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
+	"github.com/gokultp/galera_web_ui/galera"
 )
 
 func main() {
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		panic(err)
-	}
+	cluster, err := galera.NewCluster()
+	fmt.Println(err)
+	err = cluster.GetCluster()
+	fmt.Println(err)
 
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
-	if err != nil {
-		panic(err)
-	}
-
-	for _, container := range containers {
-		fmt.Println(container.ID, container.Names, container.Names, container.Status)
+	for _, node := range cluster.Nodes {
+		fmt.Println(node.ContainerID, node.Name)
 	}
 }

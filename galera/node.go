@@ -2,6 +2,7 @@ package galera
 
 import (
 	"context"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -11,7 +12,7 @@ import (
 type Node struct {
 	ContainerID string
 	Name        string
-	Port        types.Port
+	Ports       []types.Port
 	Status      string
 }
 
@@ -23,14 +24,18 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 	}
 	nodes := []Node{}
 	for _, container := range containers {
-		nodes = append(nodes, Node{
-			ContainerID: container.ID,
-			Name:        container.Names[0],
-			Port:        container.Ports[0],
-			Status:      container.Status,
-		})
-	}
 
+		if strings.HasPrefix(container.Names[0], "galera_") {
+
+			nodes = append(nodes, Node{
+				ContainerID: container.ID,
+				Name:        container.Names[0],
+				Ports:       container.Ports,
+				Status:      container.Status,
+			})
+		}
+
+	}
 	return nodes, nil
 
 }
