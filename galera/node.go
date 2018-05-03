@@ -2,6 +2,7 @@ package galera
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/docker/docker/api/types"
@@ -16,8 +17,16 @@ type Node struct {
 	Status      string
 }
 
+const (
+	// ErrNoClient is thrown while there is no docker cli client is provided
+	ErrNoClient string = "No docker client provided"
+)
+
 // GetNodes returns existing nodes on the system
 func GetNodes(cli *client.Client) ([]Node, error) {
+	if cli == nil {
+		return nil, errors.New(ErrNoClient)
+	}
 	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
 		return nil, err
