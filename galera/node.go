@@ -3,7 +3,6 @@ package galera
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -21,6 +20,7 @@ type Node struct {
 	Name        string
 	Port        uint16
 	Status      string
+	IP          string
 }
 
 const (
@@ -39,12 +39,12 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 	}
 	nodes := []Node{}
 	for _, container := range containers {
-		fmt.Println(container.NetworkSettings.Networks["bridge"].IPAddress, container.Names)
 		if strings.HasPrefix(container.Names[0], "/galera_") {
 			node := Node{
 				ContainerID: container.ID,
 				Name:        container.Names[0],
 				Status:      container.Status,
+				IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
 			}
 			if len(container.Ports) > 0 {
 				node.Port = container.Ports[0].PublicPort
