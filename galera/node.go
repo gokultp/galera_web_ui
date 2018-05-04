@@ -3,17 +3,23 @@ package galera
 import (
 	"context"
 	"errors"
+	"fmt"
+	"io"
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/docker/go-connections/nat"
 )
 
 // Node encapsulates details of a galera node
 type Node struct {
 	ContainerID string
 	Name        string
-	Ports       []types.Port
+	Port        uint16
 	Status      string
 }
 
@@ -33,18 +39,73 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 	}
 	nodes := []Node{}
 	for _, container := range containers {
-
-		if strings.HasPrefix(container.Names[0], "galera_") {
-
-			nodes = append(nodes, Node{
+		fmt.Println(container.NetworkSettings.Networks["bridge"].IPAddress, container.Names)
+		if strings.HasPrefix(container.Names[0], "/galera_") {
+			node := Node{
 				ContainerID: container.ID,
 				Name:        container.Names[0],
-				Ports:       container.Ports,
 				Status:      container.Status,
-			})
+			}
+			if len(container.Ports) > 0 {
+				node.Port = container.Ports[0].PublicPort
+			}
+			nodes = append(nodes, node)
 		}
 
 	}
 	return nodes, nil
 
+}
+
+func NewNode(name string, port uint16) *Node {
+	return &Node{
+		Name: name,
+		Port: port,
+	}
+}
+
+func (node *Node) CreateNode(cli *client.Client, imageName string) error {
+	ctx := context.Background()
+
+	// "bfirsh/reticulate-splines"
+	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+	if err != nil {
+		return err
+	}
+	io.Copy(os.Stdout, out)
+
+	strPort := strconv.Itoa(int(node.Port))
+	config := &container.Config{
+		Image: imageName,
+		ExposedPorts: nat.PortSet{
+			nat.Port(strPort): struct{}{},
+		},
+	}
+	hostConfig := &container.HostConfig{
+		PortBindings: nat.PortMap{
+			nat.Port(strPort): []nat.PortBinding{
+				{
+					HostIP:   "0.0.0.0",
+					HostPort: strPort,
+				},
+			},
+		},
+	}
+
+	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, node.Name)
+	if err != nil {
+		return err
+	}
+
+	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		return err
+	}
+
+	node.ContainerID = resp.ID
+	return nil
+}
+
+func (node *Node) StopNode(cli *client.Client) error {
+	ctx := context.Background()
+	return cli.ContainerStop(ctx, node.ContainerID, nil)
 }
