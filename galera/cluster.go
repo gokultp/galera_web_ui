@@ -41,7 +41,7 @@ func (c *Cluster) GetCluster() error {
 	if len(nodes) == 0 {
 		return nil
 	}
-	c.DB, err = sql.Open("mysql", "root@tcp("+nodes[0].IP+":3306)/")
+	c.DB, err = sql.Open("mysql", "root@tcp("+nodes[0].IP+":3306)/test")
 
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ func (c *Cluster) RunQuery(query string) {
 			log.Fatal(err)
 		}
 
-		fmt.Println(string(valp[0].([]byte)))
+		fmt.Println(string(valp[0].([]byte)), string(valp[0].([]byte)))
 	}
 	err = rows.Err()
 	if err != nil {

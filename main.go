@@ -22,5 +22,5 @@ func main() {
 		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port)
 	}
 
-	cluster.RunQuery("show status")
+	cluster.RunQuery("select * from nums")
 }
