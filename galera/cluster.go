@@ -1,13 +1,21 @@
 package galera
 
-import "github.com/docker/docker/client"
+import (
+	"database/sql"
+	"fmt"
+	"log"
+
+	"github.com/docker/docker/client"
+)
 
 // Cluster struct encapsulates informations about cluster like nodes in cluster
 type Cluster struct {
-	Name   string
-	Nodes  []Node
-	IP     string
-	Client *client.Client
+	Name          string
+	Nodes         []Node
+	IP            string
+	Client        *client.Client
+	ConnectedNode int
+	DB            *sql.DB
 }
 
 // NewCluster creates a new clusten instance (Constructor like function)
@@ -30,9 +38,58 @@ func (c *Cluster) GetCluster() error {
 		return err
 	}
 	c.Nodes = nodes
+	if len(nodes) == 0 {
+		return nil
+	}
+	c.DB, err = sql.Open("mysql", "root@tcp("+nodes[0].IP+":3306)/")
+
+	if err != nil {
+		return err
+	}
 	return nil
+
 }
 
 func (c *Cluster) AddNode() error {
 	return nil
 }
+
+// func (c *Cluster) RunQuery(query string) (interface{}, error) {
+func (c *Cluster) RunQuery(query string) {
+
+	var key, value string
+
+	rows, err := c.DB.Query(query)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+
+	columns, err := rows.Columns()
+
+	fmt.Println(columns)
+
+	for rows.Next() {
+		err := rows.Scan(&key)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = rows.Scan(&value)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(key, value)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+}
+
+// func rowsToJSON(rows *sql.Rows) (result map[string]interface{}, err error) {
+// 	columns, err := rows.Columns()
+
+// 	defer rows.Close()
+// }

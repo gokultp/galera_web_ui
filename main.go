@@ -22,5 +22,5 @@ func main() {
 		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port)
 	}
 
-	cluster.Nodes[0].RunQuery()
+	cluster.RunQuery()
 }

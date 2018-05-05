@@ -3,13 +3,9 @@ package galera
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
-	"log"
 	"os"
 	"strconv"
-
-	"database/sql"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -112,38 +108,4 @@ func (node *Node) CreateNode(cli *client.Client, imageName string) error {
 func (node *Node) StopNode(cli *client.Client) error {
 	ctx := context.Background()
 	return cli.ContainerStop(ctx, node.ContainerID, nil)
-}
-
-func (node *Node) RunQuery() {
-	var key, value string
-
-	db, err := sql.Open("mysql",
-		"root@tcp("+node.IP+":3306)/")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rows, err := db.Query("show status")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	columns, err := rows.Columns()
-
-	fmt.Println(columns)
-
-	for rows.Next() {
-		err := rows.Scan(&key, &value)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println(key, value)
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 }
