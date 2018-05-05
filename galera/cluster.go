@@ -57,8 +57,6 @@ func (c *Cluster) AddNode() error {
 // func (c *Cluster) RunQuery(query string) (interface{}, error) {
 func (c *Cluster) RunQuery(query string) {
 
-	var key, value string
-
 	rows, err := c.DB.Query(query)
 	if err != nil {
 		log.Fatal(err)
@@ -66,19 +64,17 @@ func (c *Cluster) RunQuery(query string) {
 	}
 
 	columns, err := rows.Columns()
+	var vals = make([]interface{}, len(columns))
 
 	fmt.Println(columns)
 
 	for rows.Next() {
-		err := rows.Scan(&key)
+		err := rows.Scan(vals...)
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = rows.Scan(&value)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println(key, value)
+
+		fmt.Println(vals)
 	}
 	err = rows.Err()
 	if err != nil {
