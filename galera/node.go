@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -39,18 +38,18 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 	}
 	nodes := []Node{}
 	for _, container := range containers {
-		if strings.HasPrefix(container.Names[0], "/galera_") {
-			node := Node{
-				ContainerID: container.ID,
-				Name:        container.Names[0],
-				Status:      container.Status,
-				IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
-			}
-			if len(container.Ports) > 0 {
-				node.Port = container.Ports[0].PublicPort
-			}
-			nodes = append(nodes, node)
+		// if strings.HasPrefix(container.Names[0], "/galera_") {
+		node := Node{
+			ContainerID: container.ID,
+			Name:        container.Names[0],
+			Status:      container.Status,
+			IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
 		}
+		if len(container.Ports) > 0 {
+			node.Port = container.Ports[0].PublicPort
+		}
+		nodes = append(nodes, node)
+		// }
 
 	}
 	return nodes, nil
