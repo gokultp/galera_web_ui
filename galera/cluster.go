@@ -80,7 +80,7 @@ func (c *Cluster) RunQuery(query string) {
 			log.Fatal(err)
 		}
 
-		fmt.Println(vals)
+		fmt.Println(valp)
 	}
 	err = rows.Err()
 	if err != nil {
