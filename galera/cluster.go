@@ -31,3 +31,7 @@ func (c *Cluster) GetCluster() error {
 	c.Nodes = nodes
 	return nil
 }
+
+func (c *Cluster) AddNode() error {
+	return nil
+}

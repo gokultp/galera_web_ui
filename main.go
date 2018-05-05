@@ -21,4 +21,6 @@ func main() {
 	for _, node := range cluster.Nodes {
 		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port)
 	}
+
+	cluster.Nodes[0].RunQuery()
 }

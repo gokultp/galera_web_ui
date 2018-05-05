@@ -3,14 +3,19 @@ package galera
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
+	"log"
 	"os"
 	"strconv"
+
+	"database/sql"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Node encapsulates details of a galera node
@@ -107,4 +112,39 @@ func (node *Node) CreateNode(cli *client.Client, imageName string) error {
 func (node *Node) StopNode(cli *client.Client) error {
 	ctx := context.Background()
 	return cli.ContainerStop(ctx, node.ContainerID, nil)
+}
+
+func (node *Node) RunQuery() {
+	// var id int
+	// var name string
+
+	db, err := sql.Open("mysql",
+		"tcp(127.0.0.1:3306)")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rows, err := db.Query("show status like ?", "wsrep_cluster_size")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	columns, err := rows.Columns()
+
+	fmt.Println(columns)
+
+	// for rows.Next() {
+	// 	err := rows.Scan(&id, &name)
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	log.Println(id, name)
+	// }
+	// err = rows.Err()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	defer db.Close()
 }
