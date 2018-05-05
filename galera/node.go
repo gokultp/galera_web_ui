@@ -124,7 +124,7 @@ func (node *Node) RunQuery() {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("show status")
+	rows, err := db.Query("show status like 'wsrep_cluster_size'")
 	if err != nil {
 		log.Fatal(err)
 	}
