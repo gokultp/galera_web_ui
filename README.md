@@ -1,6 +1,6 @@
 # Galera Web UI
 
-###install go 1.8 +
+# #  install go 1.8 +
 
 for ubuntu 16.04 LTS
 ```
@@ -15,13 +15,13 @@ vagrant ssh -c "sudo apt-get install -y golang-go"
 
 
 
-###Download package
+# # Download package
 for getting the package
 ```
 go get github.com/gokultp/galera_web_ui
 ```
 
-there are a few dependancy bugs bugs with docker package
+there are a few dependancy related bugs with docker package
 do the following to resolve those
 
 ```
@@ -32,7 +32,7 @@ go get golang.org/x/net/proxy
 ```
 
 
-#install docker 
+# # install docker 
 
 Refer this documentation to install docker
 [https://docs.docker.com/install/linux/docker-ce/ubuntu/]https://docs.docker.com/install/linux/docker-ce/ubuntu/
