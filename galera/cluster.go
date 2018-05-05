@@ -69,7 +69,7 @@ func (c *Cluster) RunQuery(query string) {
 	vals := make([]interface{}, len(columns))
 
 	for i, _ := range valp {
-		vals[i] = valp[i]
+		vals[i] = &valp[i]
 	}
 
 	fmt.Println(columns)
