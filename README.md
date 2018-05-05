@@ -36,3 +36,11 @@ go get golang.org/x/net/proxy
 
 Refer this documentation to install docker  
 https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+
+## Running the app
+
+```
+#sudo is needed since we are using docker functionalities
+sudo go run main.go
+```
