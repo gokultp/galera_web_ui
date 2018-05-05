@@ -64,11 +64,11 @@ func (c *Cluster) RunQuery(query string) {
 	}
 
 	columns, err := rows.Columns()
-	valp := make([][]byte, len(columns))
+	valp := make([]interface{}, len(columns))
 
 	vals := make([]interface{}, len(columns))
 
-	for i, _ := range valp {
+	for i := range valp {
 		vals[i] = &valp[i]
 	}
 
