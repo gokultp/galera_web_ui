@@ -19,6 +19,6 @@ func main() {
 
 	fmt.Println(cluster)
 	for _, node := range cluster.Nodes {
-		fmt.Println(node.ContainerID, node.Name, node.IP)
+		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port)
 	}
 }
