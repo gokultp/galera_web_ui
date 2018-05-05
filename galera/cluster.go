@@ -4,6 +4,7 @@ import "github.com/docker/docker/client"
 
 // Cluster struct encapsulates informations about cluster like nodes in cluster
 type Cluster struct {
+	Name   string
 	Nodes  []Node
 	IP     string
 	Client *client.Client
