@@ -22,5 +22,5 @@ func main() {
 		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port)
 	}
 
-	fmt.Print(cluster.RunQuery("select * from nums"))
+	fmt.Print(cluster.RunQuery("create table nums3(a integer, b integer, c integer)"))
 }
