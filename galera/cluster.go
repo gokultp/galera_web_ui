@@ -2,8 +2,6 @@ package galera
 
 import (
 	"database/sql"
-	"fmt"
-	"log"
 
 	"github.com/docker/docker/client"
 )
@@ -54,44 +52,48 @@ func (c *Cluster) AddNode() error {
 	return nil
 }
 
-// func (c *Cluster) RunQuery(query string) (interface{}, error) {
-func (c *Cluster) RunQuery(query string) {
+func (c *Cluster) RunQuery(query string) ([]map[string]string, error) {
 
 	rows, err := c.DB.Query(query)
 	if err != nil {
-		log.Fatal(err)
-
+		return nil, err
 	}
 
-	columns, err := rows.Columns()
-	valp := make([]interface{}, len(columns))
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
+	return rowsToMap(rows)
+
+}
+
+func rowsToMap(rows *sql.Rows) (results []map[string]string, err error) {
+	columns, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+
+	valPointers := make([][]byte, len(columns))
 	vals := make([]interface{}, len(columns))
 
-	for i := range valp {
-		vals[i] = &valp[i]
+	for rowIndex := range valPointers {
+		vals[rowIndex] = &valPointers[rowIndex]
 	}
-
-	fmt.Println(columns)
 
 	for rows.Next() {
 		err := rows.Scan(vals...)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
+		res := make(map[string]string)
 
-		fmt.Println(string(valp[0].([]byte)), string(valp[0].([]byte)))
+		for colIndex := range columns {
+			res[columns[colIndex]] = string(valPointers[colIndex])
+		}
+		results = append(results, res)
 	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
+	return results, nil
 
 }
-
-// func rowsToJSON(rows *sql.Rows) (result map[string]interface{}, err error) {
-// 	columns, err := rows.Columns()
-
-// 	defer rows.Close()
-// }
