@@ -119,7 +119,7 @@ func (node *Node) RunQuery() {
 	// var name string
 
 	db, err := sql.Open("mysql",
-		"tcp("+node.IP+":3306)/")
+		"mysql@tcp("+node.IP+":3306)/")
 
 	if err != nil {
 		log.Fatal(err)
