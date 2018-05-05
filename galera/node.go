@@ -115,8 +115,7 @@ func (node *Node) StopNode(cli *client.Client) error {
 }
 
 func (node *Node) RunQuery() {
-	// var id int
-	// var name string
+	var key, value string
 
 	db, err := sql.Open("mysql",
 		"root@tcp("+node.IP+":3306)/")
@@ -135,16 +134,16 @@ func (node *Node) RunQuery() {
 
 	fmt.Println(columns)
 
-	// for rows.Next() {
-	// 	err := rows.Scan(&id, &name)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	log.Println(id, name)
-	// }
-	// err = rows.Err()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	for rows.Next() {
+		err := rows.Scan(&key, &value)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(key, value)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer db.Close()
 }
