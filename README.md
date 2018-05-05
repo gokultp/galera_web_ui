@@ -21,8 +21,8 @@ for getting the package
 go get github.com/gokultp/galera_web_ui
 ```
 
-there are a few dependancy related bugs with docker package
-do the following to resolve those
+there are a few dependancy related bugs with docker package  
+do the following to resolve those  
 
 ```
 rm -r docker/docker/vendor/github.com/docker/go-connections
@@ -34,5 +34,5 @@ go get golang.org/x/net/proxy
 
 ## install docker 
 
-Refer this documentation to install docker
-[https://docs.docker.com/install/linux/docker-ce/ubuntu/]https://docs.docker.com/install/linux/docker-ce/ubuntu/
+Refer this documentation to install docker  
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
