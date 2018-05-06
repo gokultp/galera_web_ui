@@ -12,6 +12,8 @@ import {Dialog
 
 } from '@blueprintjs/core'
 import AceEditor from 'react-ace';
+import Select from 'react-select';
+
 
 import 'brace/mode/mysql';
 import 'brace/theme/tomorrow';
@@ -149,8 +151,8 @@ class App extends Component {
 		})
 	}
 	
-	switchNode(evt){
-		axios.post('/api/node/switch', {id: evt.target.value}).then(resp=>{
+	switchNode(id){
+		axios.post('/api/node/switch', {id}).then(resp=>{
 			this.setState({cluster: resp.data.data})
 		})
 	}
@@ -161,6 +163,7 @@ class App extends Component {
 
 	renderContent(){
 		const {nodes} = this.state.cluster;
+		const options = nodes.map(node=>({label: node.name, value: node.id}))
 		return(
 			<div className='page'>
 				<div className='row'>
@@ -218,11 +221,12 @@ class App extends Component {
 							<Button onClick={this.runQuery.bind(this, this.state.query)}>Run Query </Button> 
 							<span>Run queries to validate replication.</span>
 							<span>
-								<select value={this.state.cluster.connected_node} onChange={this.switchNode.bind(this)}>
-									{this.state.cluster.nodes.map(node=>{
-										<option value={node.id}>{node.name}</option>
-									})}
-								</select>
+							<Select
+								name="form-field-name"
+								value={this.state.cluster.connected_node}
+								onChange={this.switchNode.bind(this)}
+								options={options}
+							/>
 							</span>
 							<AceEditor
 								mode="mysql"
