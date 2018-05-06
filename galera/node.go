@@ -16,10 +16,10 @@ import (
 type Node struct {
 	ContainerID string `json:"id"`
 	Name        string `json:"name"`
-	Port        string `josn:"port"`
-	Status      string `josn:"status"`
-	IP          string `josn:"ip"`
-	Active      bool   `josn:"active"`
+	Port        string `json:"port"`
+	Status      string `json:"status"`
+	IP          string `json:"ip"`
+	Active      bool   `json:"active"`
 }
 
 const (
