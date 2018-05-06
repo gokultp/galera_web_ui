@@ -10,7 +10,11 @@ func main() {
 	cluster, err := galera.NewCluster()
 	fmt.Println(err)
 
+	err = cluster.GetCluster()
+	fmt.Println(err)
+
 	err = cluster.AddNode("testnode")
+	fmt.Println(err)
 
 	err = cluster.GetCluster()
 	fmt.Println(err)
@@ -20,5 +24,5 @@ func main() {
 		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port)
 	}
 
-	fmt.Print(cluster.Query("create table nums3(a integer, b integer, c integer)"))
+	// fmt.Print(cluster.Query("create table nums3(a integer, b integer, c integer)"))
 }
