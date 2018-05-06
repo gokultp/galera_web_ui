@@ -16,6 +16,7 @@ func NewAPI() (*API, error) {
 	var err error
 	api := &API{}
 	api.Cluster, err = galera.NewCluster()
+	api.Router = mux.NewRouter()
 	if err != nil {
 		return nil, err
 	}
