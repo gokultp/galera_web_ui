@@ -90,7 +90,7 @@ class App extends Component {
 	}
 
 	addNode(){
-		axios.post('/api/node/', {name: this.state.newNodeName}).then(resp=>{
+		axios.post('/api/node/add', {name: this.state.newNodeName}).then(resp=>{
 			this.setState({cluster: resp.data.data, newNodeName: ''})
 		})
 	}
