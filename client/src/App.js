@@ -148,7 +148,7 @@ class App extends Component {
 						</div>
 					</div>
 					<div className='status'>
-						<table>
+						<table border="1">
 							<tr> 
 								{this.state.status.columns.map((column, i)=>(
 									<th key={i}>{column}</th>
