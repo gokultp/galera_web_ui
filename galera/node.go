@@ -64,7 +64,7 @@ func NewNode(name string) *Node {
 	}
 }
 
-func (node *Node) StartNode(cli *client.Client, imageName string) error {
+func (node *Node) StartNode(cli *client.Client, clusterIP string) error {
 	ctx := context.Background()
 
 	// "bfirsh/reticulate-splines"
@@ -76,6 +76,7 @@ func (node *Node) StartNode(cli *client.Client, imageName string) error {
 
 	config := &container.Config{
 		Image: ImageName,
+		Cmd:   []string{"--wsrep-cluster-name=local-test", "--wsrep-cluster-address=gcomm://" + clusterIP},
 	}
 
 	resp, err := cli.ContainerCreate(ctx, config, nil, nil, node.Name)

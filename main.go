@@ -10,9 +10,7 @@ func main() {
 	cluster, err := galera.NewCluster()
 	fmt.Println(err)
 
-	// node := galera.NewNode("galera_test3", 3000)
-	// err = node.CreateNode(cluster.Client, "bfirsh/reticulate-splines")
-	// fmt.Println(err)
+	err = cluster.AddNode("testnode")
 
 	err = cluster.GetCluster()
 	fmt.Println(err)

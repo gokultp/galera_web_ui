@@ -50,8 +50,9 @@ func (c *Cluster) GetCluster() error {
 }
 
 // AddNode adds node to the cluster
-func (c *Cluster) AddNode() error {
-	return nil
+func (c *Cluster) AddNode(name string) error {
+	node := NewNode(name)
+	return node.StartNode(c.Client, c.Nodes[0].IP)
 }
 
 // Query will run query on selected cluster
