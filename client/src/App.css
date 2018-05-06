@@ -106,5 +106,16 @@ table {
 }
 
 th, td {
-  padding: 15px;
+  padding: 7px;
+}
+
+.query{
+  max-height: 50vh;
+  overflow: scroll;
+  display: flex;
+}
+.query-results{
+  max-width: 60vw;
+  overflow: scroll;
+  flex-direction: column;
 }

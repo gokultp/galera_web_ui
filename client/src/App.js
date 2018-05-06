@@ -29,6 +29,10 @@ class App extends Component {
 				columns :[],
 				data : []
 			},
+			query_results: {
+				columns :[],
+				data : []
+			},
 			newNodeName: ''
 		}
 	}
@@ -105,20 +109,45 @@ class App extends Component {
 		})
 	}
 	startNode(id){
+		let self = this;
 		axios.post('/api/node/start', {id}).then(resp=>{
-			this.getStatus();
+
+			setTimeout(()=>{self.getStatus();}, 2000)
 			this.setState({cluster: resp.data.data})
 		})
 	}
 
 	addNode(){
+		let self = this;
 		axios.post('/api/node/add', {name: this.state.newNodeName}).then(resp=>{
-			this.getStatus();
+			setTimeout(()=>{self.getStatus();}, 2000)
 
 			this.setState({cluster: resp.data.data, newNodeName: '', modalIsOpen: false})
 		})
 	}
 	
+	runQuery(query){
+		let self = this;
+		axios.post('/api/query', {query}).then(resp=>{
+			if(resp.data.data){
+				this.setState({query_results: resp.data.data})
+			}else if(resp.data.status){
+				this.setState({query_results: {
+					columns :[],
+					data : []
+				}})
+
+				alert("Success");
+			}else{
+				this.setState({query_results: {
+					columns :[],
+					data : []
+				}})
+
+				alert(resp.data.error);
+			}
+		})
+	}
 	
 	
 	closeModal() {
@@ -177,24 +206,44 @@ class App extends Component {
 					</div>
 				</div>
 				<div className='row'>
-					<div>
-					<AceEditor
-						mode="mysql"
-						theme="tomorrow"
-						name="blah2"
-						onChange={this.onChange}
-						fontSize={14}
-						showPrintMargin={true}
-						showGutter={true}
-						highlightActiveLine={true}
-						value={this.state.query}
-						setOptions={{
-						enableBasicAutocompletion: true,
-						enableLiveAutocompletion: true,
-						enableSnippets: true,
-						showLineNumbers: true,
-						tabSize: 2,
-						}}/>
+					<div className='query'>
+						<div>
+							<Button onClick={this.runQuery.bind(this, this.state.query)}>Run Query </Button> <span>Run queries to validate replication.</span>
+							<AceEditor
+								mode="mysql"
+								theme="tomorrow"
+								name="blah2"
+								onChange={this.onChange}
+								fontSize={14}
+								showPrintMargin={true}
+								showGutter={true}
+								highlightActiveLine={true}
+								value={''}
+								setOptions={{
+								enableBasicAutocompletion: true,
+								enableLiveAutocompletion: true,
+								enableSnippets: true,
+								showLineNumbers: true,
+								tabSize: 2,
+							}}/>
+						</div>
+						<div>
+							<table>
+								<tr> 
+									{this.state.query_results.columns.map((column, i)=>(
+										<th key={i}>{column}</th>
+									))}
+								</tr>
+								{this.state.query_results.data.map((row, i)=>(
+									<tr key={i}>
+										{this.state.query_results.columns.map((column, j)=>(
+											<td key={i}>{row[column]}</td>
+										))}
+									</tr>
+								))}
+
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
