@@ -120,13 +120,13 @@ func (api *API) MakeQuery(w http.ResponseWriter, r *http.Request) {
 }
 
 func jsonResponse(err error, data interface{}, status int, w http.ResponseWriter) {
-	resp := map[string]interface{}{}
+	resp := make(map[string]interface{})
 	if err != nil {
 		resp["status"] = false
 		resp["error"] = err.Error()
 	} else {
 		resp["status"] = true
-		resp["data"] = err.Error()
+		resp["data"] = data
 	}
 	jsonData, _ := json.Marshal(resp)
 	w.Header().Set("Content-Type", "application/json")
