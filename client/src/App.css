@@ -1,0 +1,96 @@
+.logo{
+  height: 30px;
+}
+
+.top-bar{
+  height: 40px;
+  padding: 5px;
+  background-color: #24303e;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+}
+
+
+.empty-page{
+  margin-top: 320px;
+  align-items: center;
+  text-align: center;
+  color: #999;
+}
+.empty-page-h{
+  font-size: 18px;
+  font-weight: bolder;
+}
+.empty-page-t{
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.empty-page-icon{
+  margin: 30px;
+}
+.modal-content{
+  padding: 10px;
+}
+.page{
+  margin-top: 50px;
+}
+.row{
+  display: flex;
+  flex-direction: row;
+}
+
+.cluster{
+  display: flex;
+  flex-direction: column;
+  width: 70vw;
+  height: 40vh;
+  border : 2px dashed #24303e;
+  margin: 30px;
+  border-radius: 10px;
+  padding: 20px;
+}
+.status{
+  display: flex;
+  flex-direction: column;
+  width: 30vw;
+  height: 40vh;
+}
+
+.node-container{
+  display: flex;
+}
+
+.node{
+  width: 200px;
+  flex-direction: column;
+  margin: 10px;
+  text-align: center;
+}
+.add-node{
+  width: 200px;
+  flex-direction: column;
+  margin: 10px;
+  text-align: center;
+  font-size: 100px;
+  border : 2px dashed #7e8691;
+  color: #7e8691;
+  border-radius: 3px;
+  padding-top: 30px;
+  cursor: pointer;
+}
+.node-name{
+  font-size: 16px;
+  font-weight: bold;
+}
+.node-status{
+  font-size: 12px;
+}
+.node-ip{
+  font-size: 12px;
+}
+.node[data-active="false"]{
+  color: #7e8691;
+}

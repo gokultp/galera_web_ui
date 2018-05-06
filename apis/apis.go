@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gokultp/galera_web_ui/galera"
@@ -28,14 +29,22 @@ func NewAPI() (*API, error) {
 
 	api.Router = mux.NewRouter()
 
-	api.Router.HandleFunc("/cluster", api.GetClusters).Methods(http.MethodGet)
-	api.Router.HandleFunc("/node", api.AddNode).Methods(http.MethodPost)
-	api.Router.HandleFunc("/node/start", api.StartNode).Methods(http.MethodPost)
-	api.Router.HandleFunc("/node/stop", api.StopNode).Methods(http.MethodPost)
-	api.Router.HandleFunc("/node/switch", api.SwitchNode).Methods(http.MethodPost)
-	api.Router.HandleFunc("/status", api.GetReplicaStatus).Methods(http.MethodPost)
-	api.Router.HandleFunc("/query", api.MakeQuery).Methods(http.MethodPost)
+	rest := api.Router.PathPrefix("/api").Subrouter()
+	rest.HandleFunc("/cluster", api.GetClusters).Methods(http.MethodGet)
+	rest.HandleFunc("/node", api.AddNode).Methods(http.MethodPost)
+	rest.HandleFunc("/node/start", api.StartNode).Methods(http.MethodPost)
+	rest.HandleFunc("/node/stop", api.StopNode).Methods(http.MethodPost)
+	rest.HandleFunc("/node/switch", api.SwitchNode).Methods(http.MethodPost)
+	rest.HandleFunc("/status", api.GetReplicaStatus).Methods(http.MethodPost)
+	rest.HandleFunc("/query", api.MakeQuery).Methods(http.MethodPost)
 
+	api.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./client/build/static"))))
+
+	api.Router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./client/build/index.html")
+	})
+
+	log.Println("Listening")
 	return api, nil
 }
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/gokultp/galera_web_ui/apis"
 )
@@ -9,8 +9,11 @@ import (
 func main() {
 	api, err := apis.NewAPI()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	api.Listen(":80")
+	err = api.Listen(":8000")
+	if err != nil {
+		fmt.Println(err)
+	}
 
 }
