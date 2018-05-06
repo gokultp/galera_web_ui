@@ -62,6 +62,16 @@ func (c *Cluster) GetCluster() error {
 	return err
 }
 
+// Refresh gets all latest cluster details
+func (c *Cluster) Refresh() error {
+	nodes, err := GetNodes(c.Client)
+	if err != nil {
+		return err
+	}
+	c.Nodes = nodes
+	return nil
+}
+
 // AddNode adds node to the cluster
 func (c *Cluster) AddNode(name string) error {
 	node := NewNode(name)

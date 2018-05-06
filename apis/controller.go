@@ -6,7 +6,7 @@ import (
 )
 
 func (api *API) GetClusters(w http.ResponseWriter, r *http.Request) {
-	err := api.Cluster.GetCluster()
+	err := api.Cluster.Refresh()
 
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
@@ -28,7 +28,7 @@ func (api *API) AddNode(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(err, nil, 500, w)
 		return
 	}
-	err = api.Cluster.GetCluster()
+	err = api.Cluster.Refresh()
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
 		return
@@ -48,7 +48,7 @@ func (api *API) StartNode(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(err, nil, 500, w)
 		return
 	}
-	err = api.Cluster.GetCluster()
+	err = api.Cluster.Refresh()
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
 		return
@@ -68,7 +68,7 @@ func (api *API) StopNode(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(err, nil, 500, w)
 		return
 	}
-	err = api.Cluster.GetCluster()
+	err = api.Cluster.Refresh()
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
 		return
@@ -88,7 +88,7 @@ func (api *API) SwitchNode(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(err, nil, 500, w)
 		return
 	}
-	err = api.Cluster.GetCluster()
+	err = api.Cluster.Refresh()
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
 		return
