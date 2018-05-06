@@ -66,7 +66,6 @@ func NewNode(name string) *Node {
 func (node *Node) CreateNode(cli *client.Client, clusterIP string) error {
 	ctx := context.Background()
 
-	// "bfirsh/reticulate-splines"
 	out, err := cli.ImagePull(ctx, ImageName, types.ImagePullOptions{})
 	if err != nil {
 		return err
@@ -93,18 +92,13 @@ func (node *Node) CreateNode(cli *client.Client, clusterIP string) error {
 }
 
 // StartNode starts a node
-func (node *Node) StartNode(cli *client.Client, clusterIP string) error {
+func (node *Node) StartNode(cli *client.Client) error {
 	ctx := context.Background()
 
 	if node.ContainerID == "" {
 		return errors.New(ErrNodeNotIntialised)
 	}
-
-	if err := cli.ContainerStart(ctx, node.ContainerID, types.ContainerStartOptions{}); err != nil {
-		return err
-	}
-
-	return nil
+	return cli.ContainerStart(ctx, node.ContainerID, types.ContainerStartOptions{})
 }
 
 // StopNode stops a node

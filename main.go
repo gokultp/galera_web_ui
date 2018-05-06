@@ -18,6 +18,7 @@ func main() {
 
 	// err = cluster.GetCluster()
 	// fmt.Println(err)
+	fmt.Println(cluster.StartNode(cluster.Nodes[0].ContainerID))
 
 	for _, node := range cluster.Nodes {
 		fmt.Println(node.ContainerID, node.Name, node.IP, node.Port, node.Status)

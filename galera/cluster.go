@@ -2,9 +2,15 @@ package galera
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/docker/docker/client"
 	_ "github.com/go-sql-driver/mysql"
+)
+
+const (
+	// ErrNoNodeFound throws while there there is no node found with given id
+	ErrNoNodeFound string = "No node found with given id"
 )
 
 // Cluster struct encapsulates informations about cluster like nodes in cluster
@@ -13,7 +19,7 @@ type Cluster struct {
 	Nodes         []Node
 	IP            string
 	Client        *client.Client
-	ConnectedNode int
+	ConnectedNode string
 	DB            *sql.DB
 }
 
@@ -41,6 +47,7 @@ func (c *Cluster) GetCluster() error {
 		return nil
 	}
 	c.DB, err = sql.Open("mysql", nodes[0].GetDBConnectionString())
+	c.ConnectedNode = nodes[0].ContainerID
 
 	if err != nil {
 		return err
@@ -52,7 +59,7 @@ func (c *Cluster) GetCluster() error {
 // AddNode adds node to the cluster
 func (c *Cluster) AddNode(name string) error {
 	node := NewNode(name)
-	return node.StartNode(c.Client, c.Nodes[0].IP)
+	return node.CreateNode(c.Client, c.Nodes[0].IP)
 }
 
 // Query will run query on selected cluster
@@ -73,14 +80,38 @@ func (c *Cluster) Query(query string) ([]map[string]string, error) {
 
 }
 
+func (c *Cluster) getNodeByContainerID(id string) *Node {
+	var selectedNode *Node
+	for _, node := range c.Nodes {
+		if node.ContainerID == id {
+			selectedNode = &node
+			break
+		}
+	}
+	return selectedNode
+}
+
+// StartNode will start a node in stopped state
+func (c *Cluster) StartNode(id string) error {
+	selectedNode := c.getNodeByContainerID(id)
+	if selectedNode == nil {
+		return errors.New(ErrNoNodeFound)
+	}
+	return selectedNode.StartNode(c.Client)
+}
+
 // SwitchDBConnection will switch db connection to given node
-func (c *Cluster) SwitchDBConnection(nodeIndex int) error {
+func (c *Cluster) SwitchDBConnection(id string) error {
 	err := c.DB.Close()
 	if err != nil {
 		return err
 	}
-	c.DB, err = sql.Open("mysql", c.Nodes[nodeIndex].GetDBConnectionString())
-	c.ConnectedNode = nodeIndex
+	selectedNode := c.getNodeByContainerID(id)
+	if selectedNode == nil {
+		return errors.New(ErrNoNodeFound)
+	}
+	c.DB, err = sql.Open("mysql", selectedNode.GetDBConnectionString())
+	c.ConnectedNode = selectedNode.ContainerID
 	return err
 }
 
