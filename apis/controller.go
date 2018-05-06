@@ -120,7 +120,7 @@ func (api *API) MakeQuery(w http.ResponseWriter, r *http.Request) {
 }
 
 func jsonResponse(err error, data interface{}, status int, w http.ResponseWriter) {
-	resp := make(map[string]interface{})
+	resp := map[string]interface{}{}
 	if err != nil {
 		resp["status"] = false
 		resp["error"] = err.Error()
