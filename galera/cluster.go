@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/docker/docker/client"
+	// mysql client library
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -15,11 +16,10 @@ const (
 
 // Cluster struct encapsulates informations about cluster like nodes in cluster
 type Cluster struct {
-	Name          string
-	Nodes         []Node
-	IP            string
+	Name          string `json:"name"`
+	Nodes         []Node `json:"nodes"`
 	Client        *client.Client
-	ConnectedNode string
+	ConnectedNode string `json:"connected_node"`
 	DB            *sql.DB
 }
 

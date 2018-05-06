@@ -14,12 +14,12 @@ import (
 
 // Node encapsulates details of a galera node
 type Node struct {
-	ContainerID string
-	Name        string
-	Port        string
-	Status      string
-	IP          string
-	Active      bool
+	ContainerID string `json:"id"`
+	Name        string `json:"name"`
+	Port        string `josn:"port"`
+	Status      string `josn:"status"`
+	IP          string `josn:"ip"`
+	Active      bool   `josn:"active"`
 }
 
 const (
