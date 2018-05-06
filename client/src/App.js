@@ -151,8 +151,8 @@ class App extends Component {
 		})
 	}
 	
-	switchNode(id){
-		axios.post('/api/node/switch', {id}).then(resp=>{
+	switchNode(data){
+		axios.post('/api/node/switch', {id: data.value}).then(resp=>{
 			this.setState({cluster: resp.data.data})
 		})
 	}
