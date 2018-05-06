@@ -48,11 +48,13 @@ func (c *Cluster) GetCluster() error {
 
 }
 
+// AddNode adds node to the cluster
 func (c *Cluster) AddNode() error {
 	return nil
 }
 
-func (c *Cluster) RunQuery(query string) ([]map[string]string, error) {
+// Query will run query on selected cluster
+func (c *Cluster) Query(query string) ([]map[string]string, error) {
 
 	rows, err := c.DB.Query(query)
 	if err != nil {
@@ -69,6 +71,17 @@ func (c *Cluster) RunQuery(query string) ([]map[string]string, error) {
 
 }
 
+// SwitchDBConnection will switch db connection to given node
+func (c *Cluster) SwitchDBConnection(nodeIndex int) error {
+	err := c.DB.Close()
+	if err != nil {
+		return err
+	}
+	c.DB, err = sql.Open("mysql", "root@tcp("+c.Nodes[nodeIndex].IP+":3306)/test")
+	return err
+}
+
+// rowsToMap converts SQL row to string map, which is easier to convert to JSON
 func rowsToMap(rows *sql.Rows) (results []map[string]string, err error) {
 	columns, err := rows.Columns()
 	if err != nil {

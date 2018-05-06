@@ -3,15 +3,13 @@ package galera
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"os"
-	"strconv"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
-	"github.com/docker/go-connections/nat"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 // Node encapsulates details of a galera node
@@ -24,8 +22,10 @@ type Node struct {
 }
 
 const (
-	// ErrNoClient is thrown while there is no docker cli client is provided
+	// ErrNoClient is thrown while there is no docker cli client is provided.
 	ErrNoClient string = "No docker client provided"
+	// ImageName is name of galera docker image.
+	ImageName string = "erkules/galera"
 )
 
 // GetNodes returns existing nodes on the system
@@ -39,60 +39,46 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 	}
 	nodes := []Node{}
 	for _, container := range containers {
-		// if strings.HasPrefix(container.Names[0], "/galera_") {
-		node := Node{
-			ContainerID: container.ID,
-			Name:        container.Names[0],
-			Status:      container.Status,
-			IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
+		fmt.Println(container.Labels)
+		if container.Image == ImageName {
+			node := Node{
+				ContainerID: container.ID,
+				Name:        container.Names[0],
+				Status:      container.Status,
+				IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
+			}
+			if len(container.Ports) > 0 {
+				node.Port = container.Ports[0].PublicPort
+			}
+			nodes = append(nodes, node)
 		}
-		if len(container.Ports) > 0 {
-			node.Port = container.Ports[0].PublicPort
-		}
-		nodes = append(nodes, node)
-		// }
 
 	}
 	return nodes, nil
 
 }
 
-func NewNode(name string, port uint16) *Node {
+func NewNode(name string) *Node {
 	return &Node{
 		Name: name,
-		Port: port,
 	}
 }
 
-func (node *Node) CreateNode(cli *client.Client, imageName string) error {
+func (node *Node) StartNode(cli *client.Client, imageName string) error {
 	ctx := context.Background()
 
 	// "bfirsh/reticulate-splines"
-	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+	out, err := cli.ImagePull(ctx, ImageName, types.ImagePullOptions{})
 	if err != nil {
 		return err
 	}
 	io.Copy(os.Stdout, out)
 
-	strPort := strconv.Itoa(int(node.Port))
 	config := &container.Config{
-		Image: imageName,
-		ExposedPorts: nat.PortSet{
-			nat.Port(strPort): struct{}{},
-		},
-	}
-	hostConfig := &container.HostConfig{
-		PortBindings: nat.PortMap{
-			nat.Port(strPort): []nat.PortBinding{
-				{
-					HostIP:   "0.0.0.0",
-					HostPort: strPort,
-				},
-			},
-		},
+		Image: ImageName,
 	}
 
-	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, node.Name)
+	resp, err := cli.ContainerCreate(ctx, config, nil, nil, node.Name)
 	if err != nil {
 		return err
 	}
