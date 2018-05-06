@@ -110,8 +110,10 @@ th, td {
 }
 
 .query{
+  background-color: #fff;
+  border-top: 20px solid antiquewhite;
   max-height: 50vh;
-  overflow: scroll;
+  overflow: hidden;
   display: flex;
 }
 .query-results{
