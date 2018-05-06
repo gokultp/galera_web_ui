@@ -219,7 +219,7 @@ class App extends Component {
 							<span>Run queries to validate replication.</span>
 							<span>
 								<select value={this.state.cluster.connected_node} onChange={this.switchNode.bind(this)}>
-									{this.cluster.nodes.map(node=>{
+									{this.state.cluster.nodes.map(node=>{
 										<option value={node.id}>{node.name}</option>
 									})}
 								</select>
