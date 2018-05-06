@@ -35,7 +35,7 @@ func NewAPI() (*API, error) {
 	rest.HandleFunc("/node/start", api.StartNode).Methods(http.MethodPost)
 	rest.HandleFunc("/node/stop", api.StopNode).Methods(http.MethodPost)
 	rest.HandleFunc("/node/switch", api.SwitchNode).Methods(http.MethodPost)
-	rest.HandleFunc("/status", api.GetReplicaStatus).Methods(http.MethodPost)
+	rest.HandleFunc("/status", api.GetReplicaStatus).Methods(http.MethodGet)
 	rest.HandleFunc("/query", api.MakeQuery).Methods(http.MethodPost)
 
 	api.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./client/build/static"))))
