@@ -12,7 +12,9 @@ type API struct {
 	Router  *mux.Router
 }
 
-func NewAPI() (api *API, err error) {
+func NewAPI() (*API, error) {
+	var err error
+	api := &API{}
 	api.Cluster, err = galera.NewCluster()
 	if err != nil {
 		return nil, err
