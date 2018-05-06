@@ -3,7 +3,6 @@ package galera
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 
@@ -16,7 +15,7 @@ import (
 type Node struct {
 	ContainerID string
 	Name        string
-	Port        uint16
+	Port        string
 	Status      string
 	IP          string
 }
@@ -24,6 +23,8 @@ type Node struct {
 const (
 	// ErrNoClient is thrown while there is no docker cli client is provided.
 	ErrNoClient string = "No docker client provided"
+	// ErrNodeNotIntialised is thrown while staring node before init
+	ErrNodeNotIntialised string = "Node is not created, create node before starting"
 	// ImageName is name of galera docker image.
 	ImageName string = "erkules/galera"
 )
@@ -33,23 +34,21 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 	if cli == nil {
 		return nil, errors.New(ErrNoClient)
 	}
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{All: true})
 	if err != nil {
 		return nil, err
 	}
 	nodes := []Node{}
 	for _, container := range containers {
-		fmt.Println(container.Labels)
 		if container.Image == ImageName {
 			node := Node{
 				ContainerID: container.ID,
 				Name:        container.Names[0],
 				Status:      container.Status,
 				IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
+				Port:        "3306",
 			}
-			if len(container.Ports) > 0 {
-				node.Port = container.Ports[0].PublicPort
-			}
+
 			nodes = append(nodes, node)
 		}
 
@@ -64,7 +63,7 @@ func NewNode(name string) *Node {
 	}
 }
 
-func (node *Node) StartNode(cli *client.Client, clusterIP string) error {
+func (node *Node) CreateNode(cli *client.Client, clusterIP string) error {
 	ctx := context.Background()
 
 	// "bfirsh/reticulate-splines"
@@ -90,9 +89,31 @@ func (node *Node) StartNode(cli *client.Client, clusterIP string) error {
 
 	node.ContainerID = resp.ID
 	return nil
+
 }
 
+// StartNode starts a node
+func (node *Node) StartNode(cli *client.Client, clusterIP string) error {
+	ctx := context.Background()
+
+	if node.ContainerID == "" {
+		return errors.New(ErrNodeNotIntialised)
+	}
+
+	if err := cli.ContainerStart(ctx, node.ContainerID, types.ContainerStartOptions{}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// StopNode stops a node
 func (node *Node) StopNode(cli *client.Client) error {
 	ctx := context.Background()
 	return cli.ContainerStop(ctx, node.ContainerID, nil)
+}
+
+// GetDBConnectionString returns the connection string config for DB in node
+func (node *Node) GetDBConnectionString() string {
+	return "root@tcp(" + node.IP + ":" + node.Port + ")/"
 }

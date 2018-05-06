@@ -40,7 +40,7 @@ func (c *Cluster) GetCluster() error {
 	if len(nodes) == 0 {
 		return nil
 	}
-	c.DB, err = sql.Open("mysql", "root@tcp("+nodes[0].IP+":3306)/")
+	c.DB, err = sql.Open("mysql", nodes[0].GetDBConnectionString())
 
 	if err != nil {
 		return err
@@ -79,7 +79,8 @@ func (c *Cluster) SwitchDBConnection(nodeIndex int) error {
 	if err != nil {
 		return err
 	}
-	c.DB, err = sql.Open("mysql", "root@tcp("+c.Nodes[nodeIndex].IP+":3306)/test")
+	c.DB, err = sql.Open("mysql", c.Nodes[nodeIndex].GetDBConnectionString())
+	c.ConnectedNode = nodeIndex
 	return err
 }
 
