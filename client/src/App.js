@@ -149,6 +149,11 @@ class App extends Component {
 		})
 	}
 	
+	switchNode(evt){
+		axios.post('/api/node/switch', {id: evt.target.value}).then(resp=>{
+			this.setState({cluster: resp.data.data})
+		})
+	}
 	
 	closeModal() {
 		this.setState({modalIsOpen: false});
@@ -210,7 +215,15 @@ class App extends Component {
 
 					<div className='query'>
 						<div>
-							<Button onClick={this.runQuery.bind(this, this.state.query)}>Run Query </Button> <span>Run queries to validate replication.</span>
+							<Button onClick={this.runQuery.bind(this, this.state.query)}>Run Query </Button> 
+							<span>Run queries to validate replication.</span>
+							<span>
+								<select value={this.state.cluster.connected_node} onChange={this.switchNode.bind(this)}>
+									{this.cluster.nodes.map(node=>{
+										<option value={node.id}>{node.name}</option>
+									})}
+								</select>
+							</span>
 							<AceEditor
 								mode="mysql"
 								theme="tomorrow"

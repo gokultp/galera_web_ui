@@ -110,11 +110,12 @@ th, td {
 }
 .query-row{
   border-top: 20px solid #f6f6f6;
+  background-color: #fff;
+
 
 }
 
 .query{
-  background-color: #fff;
   max-height: 50vh;
   overflow: hidden;
   display: flex;
