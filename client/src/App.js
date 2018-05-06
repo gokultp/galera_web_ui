@@ -26,7 +26,7 @@ class App extends Component {
 	}
 
 	componentDidMount(){
-		axios.get('/cluster').then(resp=>{
+		axios.get('/api/cluster').then(resp=>{
 			this.setState({cluster: resp.data.data})
 		})
 	}
