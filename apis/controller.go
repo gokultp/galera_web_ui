@@ -96,7 +96,7 @@ func (api *API) SwitchNode(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(nil, api.Cluster, 200, w)
 }
 
-func (api *API) GetReplicaStatus(w http.ResponseWriter, r *http.Request) {
+func (api *API) MakeQuery(w http.ResponseWriter, r *http.Request) {
 	payload, err := decodePayload(r)
 	if err != nil {
 		jsonResponse(err, nil, 400, w)
@@ -110,7 +110,7 @@ func (api *API) GetReplicaStatus(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(nil, res, 200, w)
 }
 
-func (api *API) MakeQuery(w http.ResponseWriter, r *http.Request) {
+func (api *API) GetReplicaStatus(w http.ResponseWriter, r *http.Request) {
 	res, err := api.Cluster.Query("show status")
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
