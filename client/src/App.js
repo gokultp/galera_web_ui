@@ -77,6 +77,17 @@ class App extends Component {
 		this.setState({newNodeName: evt.target.value});
 
 	}
+
+	stopNode(id){
+		axios.post('/api/node/stop', {id}).then(resp=>{
+			this.setState({cluster: resp.data.data})
+		})
+	}
+	startNode(id){
+		axios.post('/api/node/start', {id}).then(resp=>{
+			this.setState({cluster: resp.data.data})
+		})
+	}
 	
 	
 	
@@ -103,8 +114,8 @@ class App extends Component {
 									<div className='node-ip'>{node.ip}:{node.port}</div>
 									<div>
 										{node.active ?
-											<Button>Stop</Button>:
-											<Button>Start</Button>
+											<Button onClick={this.stopNode.bind(this,node.id)}>Stop</Button>:
+											<Button onClick={this.startNode.bind(this,node.id)}>Start</Button>
 										}
 									</div>
 
