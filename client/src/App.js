@@ -220,14 +220,6 @@ class App extends Component {
 						<div>
 							<Button onClick={this.runQuery.bind(this, this.state.query)}>Run Query </Button> 
 							<span>Run queries to validate replication.</span>
-							<span>
-							<Select
-								name="form-field-name"
-								value={this.state.cluster.connected_node}
-								onChange={this.switchNode.bind(this)}
-								options={options}
-							/>
-							</span>
 							<AceEditor
 								mode="mysql"
 								theme="tomorrow"
@@ -247,6 +239,13 @@ class App extends Component {
 							}}/>
 						</div>
 						<div>
+							Select node to execute query
+							<Select
+								name="form-field-name"
+								value={this.state.cluster.connected_node}
+								onChange={this.switchNode.bind(this)}
+								options={options}
+							/>
 							<table>
 								<tr> 
 									{this.state.query_results.columns.map((column, i)=>(
