@@ -21,14 +21,27 @@ class App extends Component {
 			cluster: {
 				nodes :[]
 			},
+			status: {
+				columns :[],
+				data : []
+			},
 			newNodeName: ''
 		}
 	}
 
-	componentDidMount(){
+	getCluster(){
 		axios.get('/api/cluster').then(resp=>{
 			this.setState({cluster: resp.data.data})
 		})
+	}
+	getStatus(){
+		axios.get('/api/status').then(resp=>{
+			this.setState({status: resp.data.data})
+		})
+	}
+	componentDidMount(){
+		this.getCluster();
+		this.getStatus();
 	}
 
 	renderEmptyPage(){
@@ -91,7 +104,7 @@ class App extends Component {
 
 	addNode(){
 		axios.post('/api/node/add', {name: this.state.newNodeName}).then(resp=>{
-			this.setState({cluster: resp.data.data, newNodeName: ''})
+			this.setState({cluster: resp.data.data, newNodeName: '', modalIsOpen: false})
 		})
 	}
 	
@@ -135,7 +148,21 @@ class App extends Component {
 						</div>
 					</div>
 					<div className='status'>
-						status
+						<table>
+							<tr> 
+								{this.state.status.columns.map((column, i)=>(
+									<th key={i}>{column}</th>
+								))}
+							</tr>
+							{this.state.status.data.map((row, i)=>(
+								<tr key={i}>
+									{this.state.status.columns.map((column, j)=>(
+										<td key={i}>{row[column]}</td>
+									))}
+								</tr>
+							))}
+
+						</table>
 					</div>
 				</div>
 				<div className='row'>

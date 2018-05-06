@@ -79,7 +79,7 @@ func (c *Cluster) AddNode(name string) error {
 }
 
 // Query will run query on selected cluster
-func (c *Cluster) Query(query string) ([]map[string]string, error) {
+func (c *Cluster) Query(query string) (map[string]interface{}, error) {
 
 	rows, err := c.DB.Query(query)
 	if err != nil {
@@ -141,7 +141,8 @@ func (c *Cluster) SwitchDBConnection(id string) error {
 }
 
 // rowsToMap converts SQL row to string map, which is easier to convert to JSON
-func rowsToMap(rows *sql.Rows) (results []map[string]string, err error) {
+func rowsToMap(rows *sql.Rows) (map[string]interface{}, error) {
+	results := make([]map[string]string, 0)
 	columns, err := rows.Columns()
 	if err != nil {
 		return nil, err
@@ -166,6 +167,9 @@ func rowsToMap(rows *sql.Rows) (results []map[string]string, err error) {
 		}
 		results = append(results, res)
 	}
-	return results, nil
+	return map[string]interface{}{
+		"data":    results,
+		"columns": columns,
+	}, nil
 
 }
