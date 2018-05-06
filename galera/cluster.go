@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/docker/docker/client"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Cluster struct encapsulates informations about cluster like nodes in cluster
