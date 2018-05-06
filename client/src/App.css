@@ -108,10 +108,13 @@ table {
 th, td {
   padding: 7px;
 }
+.query-row{
+  border-top: 20px solid #f6f6f6;
+
+}
 
 .query{
   background-color: #fff;
-  border-top: 20px solid antiquewhite;
   max-height: 50vh;
   overflow: hidden;
   display: flex;

@@ -206,8 +206,8 @@ class App extends Component {
 					</div>
 				</div>
 				<hr/>
-				<div className='row'>
-				
+				<div className='row query-row' >
+
 					<div className='query'>
 						<div>
 							<Button onClick={this.runQuery.bind(this, this.state.query)}>Run Query </Button> <span>Run queries to validate replication.</span>
