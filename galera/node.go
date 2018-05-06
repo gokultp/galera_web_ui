@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -18,6 +19,7 @@ type Node struct {
 	Port        string
 	Status      string
 	IP          string
+	Active      bool
 }
 
 const (
@@ -47,6 +49,7 @@ func GetNodes(cli *client.Client) ([]Node, error) {
 				Status:      container.Status,
 				IP:          container.NetworkSettings.Networks["bridge"].IPAddress,
 				Port:        "3306",
+				Active:      strings.Contains(container.Status, "Up"),
 			}
 
 			nodes = append(nodes, node)

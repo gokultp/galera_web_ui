@@ -25,4 +25,5 @@ func main() {
 	}
 
 	fmt.Print(cluster.Query("show status like 'wsrep_cluster_size'"))
+
 }

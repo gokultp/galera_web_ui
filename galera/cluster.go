@@ -46,14 +46,20 @@ func (c *Cluster) GetCluster() error {
 	if len(nodes) == 0 {
 		return nil
 	}
-	c.DB, err = sql.Open("mysql", nodes[0].GetDBConnectionString())
-	c.ConnectedNode = nodes[0].ContainerID
-
-	if err != nil {
-		return err
+	var selectedNode *Node
+	for _, node := range nodes {
+		if node.Active {
+			selectedNode = &node
+			break
+		}
 	}
-	return nil
 
+	if selectedNode == nil {
+		return nil
+	}
+	c.ConnectedNode = selectedNode.ContainerID
+	c.DB, err = sql.Open("mysql", selectedNode.GetDBConnectionString())
+	return err
 }
 
 // AddNode adds node to the cluster
@@ -98,6 +104,15 @@ func (c *Cluster) StartNode(id string) error {
 		return errors.New(ErrNoNodeFound)
 	}
 	return selectedNode.StartNode(c.Client)
+}
+
+// StopNode will stop an running node
+func (c *Cluster) StopNode(id string) error {
+	selectedNode := c.getNodeByContainerID(id)
+	if selectedNode == nil {
+		return errors.New(ErrNoNodeFound)
+	}
+	return selectedNode.StopNode(c.Client)
 }
 
 // SwitchDBConnection will switch db connection to given node
