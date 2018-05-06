@@ -111,7 +111,7 @@ func (api *API) MakeQuery(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) GetReplicaStatus(w http.ResponseWriter, r *http.Request) {
-	res, err := api.Cluster.Query("show status")
+	res, err := api.Cluster.Query("show status like 'wsrep_cluster'")
 	if err != nil {
 		jsonResponse(err, nil, 500, w)
 		return
