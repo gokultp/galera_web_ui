@@ -213,12 +213,12 @@ class App extends Component {
 								mode="mysql"
 								theme="tomorrow"
 								name="blah2"
-								onChange={this.onChange}
+								onChange={this.onChange.bind(this)}
 								fontSize={14}
 								showPrintMargin={true}
 								showGutter={true}
 								highlightActiveLine={true}
-								value={''}
+								value={this.state.query}
 								setOptions={{
 								enableBasicAutocompletion: true,
 								enableLiveAutocompletion: true,
