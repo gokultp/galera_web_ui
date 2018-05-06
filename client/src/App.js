@@ -11,6 +11,10 @@ import {Dialog
 	, Elevation
 
 } from '@blueprintjs/core'
+import AceEditor from 'react-ace';
+
+import 'brace/mode/mysql';
+import 'brace/theme/tomorrow';
 
 
 class App extends Component {
@@ -55,6 +59,9 @@ class App extends Component {
 			</div>
 		)
 	}
+	onChange(value){
+		this.setState({query: value})
+	}
 
 	renderModal(){
 		return(
@@ -93,17 +100,21 @@ class App extends Component {
 
 	stopNode(id){
 		axios.post('/api/node/stop', {id}).then(resp=>{
+			this.getStatus();
 			this.setState({cluster: resp.data.data})
 		})
 	}
 	startNode(id){
 		axios.post('/api/node/start', {id}).then(resp=>{
+			this.getStatus();
 			this.setState({cluster: resp.data.data})
 		})
 	}
 
 	addNode(){
 		axios.post('/api/node/add', {name: this.state.newNodeName}).then(resp=>{
+			this.getStatus();
+
 			this.setState({cluster: resp.data.data, newNodeName: '', modalIsOpen: false})
 		})
 	}
@@ -166,7 +177,25 @@ class App extends Component {
 					</div>
 				</div>
 				<div className='row'>
-					query
+					<div>
+					<AceEditor
+						mode="mysql"
+						theme="tomorrow"
+						name="blah2"
+						onChange={this.onChange}
+						fontSize={14}
+						showPrintMargin={true}
+						showGutter={true}
+						highlightActiveLine={true}
+						value={this.state.query}
+						setOptions={{
+						enableBasicAutocompletion: true,
+						enableLiveAutocompletion: true,
+						enableSnippets: true,
+						showLineNumbers: true,
+						tabSize: 2,
+						}}/>
+					</div>
 				</div>
 			</div>
 		)
