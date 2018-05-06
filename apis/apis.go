@@ -15,11 +15,18 @@ type API struct {
 func NewAPI() (*API, error) {
 	var err error
 	api := &API{}
+
 	api.Cluster, err = galera.NewCluster()
-	api.Router = mux.NewRouter()
 	if err != nil {
 		return nil, err
 	}
+
+	err = api.Cluster.GetCluster()
+	if err != nil {
+		return nil, err
+	}
+
+	api.Router = mux.NewRouter()
 
 	api.Router.HandleFunc("/cluster", api.GetClusters).Methods(http.MethodGet)
 	api.Router.HandleFunc("/node", api.AddNode).Methods(http.MethodPost)
