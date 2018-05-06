@@ -61,7 +61,7 @@ class App extends Component {
 						<p> Add a node to the cluster</p> 
 						<InputGroup  placeholder="Node name" onChange={this.handleNodeNameChange.bind(this)}/>
 						<br/>
-						<Button style={{float: 'right'}}>Add Node</Button>
+						<Button style={{float: 'right'}} onClick={this.addNode.bind(this)}>Add Node</Button>
 					</div>
 					}
 				</div>
@@ -86,6 +86,12 @@ class App extends Component {
 	startNode(id){
 		axios.post('/api/node/start', {id}).then(resp=>{
 			this.setState({cluster: resp.data.data})
+		})
+	}
+
+	addNode(){
+		axios.post('/api/node/', {name: this.state.newNodeName}).then(resp=>{
+			this.setState({cluster: resp.data.data, newNodeName: ''})
 		})
 	}
 	
