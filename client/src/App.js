@@ -80,7 +80,7 @@ class App extends Component {
 				<div className='modal-content'>
 					{this.state.cluster.nodes.length >= 3 ?
 					<div>
-						<p> Due to RAM limitations, you can add a maximum of 3 nodes now.</p> 
+						<p> Due to RAM limitations, you can add only a maximum of 3 nodes now.</p> 
 						<Button style={{float: 'right'}} onClick={this.closeModal.bind(this)}>Ok</Button>
 					</div>:
 					<div>
@@ -154,14 +154,17 @@ class App extends Component {
 				data : []
 			}})
 			console.log(err)
-			alert(err);
+			alert(err.response.data.error);
 
 		})
 	}
 	
 	switchNode(data){
 		axios.post('/api/node/switch', {id: data.value}).then(resp=>{
-			this.setState({cluster: resp.data.data})
+			this.setState({cluster: resp.data.data, query_results: {
+				columns :[],
+				data : []
+			}})
 		})
 	}
 	
