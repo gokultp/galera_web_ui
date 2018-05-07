@@ -48,11 +48,7 @@ func (api *API) StartNode(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(err, nil, 500, w)
 		return
 	}
-	err = api.Cluster.Refresh()
-	if err != nil {
-		jsonResponse(err, nil, 500, w)
-		return
-	}
+
 	jsonResponse(nil, api.Cluster, 200, w)
 
 }
@@ -68,11 +64,7 @@ func (api *API) StopNode(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(err, nil, 500, w)
 		return
 	}
-	err = api.Cluster.Refresh()
-	if err != nil {
-		jsonResponse(err, nil, 500, w)
-		return
-	}
+
 	jsonResponse(nil, api.Cluster, 200, w)
 
 }

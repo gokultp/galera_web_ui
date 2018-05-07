@@ -148,6 +148,14 @@ class App extends Component {
 
 				alert(resp.data.error);
 			}
+		}).catch(err=>{
+			this.setState({query_results: {
+				columns :[],
+				data : []
+			}})
+			console.log(err)
+			alert(err);
+
 		})
 	}
 	

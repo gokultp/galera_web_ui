@@ -75,7 +75,11 @@ func (c *Cluster) Refresh() error {
 // AddNode adds node to the cluster
 func (c *Cluster) AddNode(name string) error {
 	node := NewNode(name)
-	return node.CreateNode(c.Client, c.Nodes[0].IP)
+	if len(c.Nodes) > 0 {
+		return node.CreateNode(c.Client, c.Nodes[0].IP)
+	}
+	return node.CreateNode(c.Client, "")
+
 }
 
 // Query will run query on selected cluster
@@ -113,7 +117,11 @@ func (c *Cluster) StartNode(id string) error {
 	if selectedNode == nil {
 		return errors.New(ErrNoNodeFound)
 	}
-	return selectedNode.StartNode(c.Client)
+	err := selectedNode.StartNode(c.Client)
+	if err != nil {
+		return err
+	}
+	return c.GetCluster()
 }
 
 // StopNode will stop an running node
@@ -122,7 +130,11 @@ func (c *Cluster) StopNode(id string) error {
 	if selectedNode == nil {
 		return errors.New(ErrNoNodeFound)
 	}
-	return selectedNode.StopNode(c.Client)
+	err := selectedNode.StopNode(c.Client)
+	if err != nil {
+		return err
+	}
+	return c.GetCluster()
 }
 
 // SwitchDBConnection will switch db connection to given node
