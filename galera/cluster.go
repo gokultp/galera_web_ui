@@ -12,6 +12,8 @@ import (
 const (
 	// ErrNoNodeFound throws while there there is no node found with given id
 	ErrNoNodeFound string = "No node found with given id"
+	// ErrDBNotConnected is thrown while making a query before connecting DB
+	ErrDBNotConnected string = "DB is not connected"
 )
 
 // Cluster struct encapsulates informations about cluster like nodes in cluster
@@ -89,6 +91,9 @@ func (c *Cluster) AddNode(name string) error {
 // Query will run query on selected cluster
 func (c *Cluster) Query(query string) (map[string]interface{}, error) {
 
+	if c.DB == nil {
+		return nil, errors.New(ErrDBNotConnected)
+	}
 	rows, err := c.DB.Query(query)
 	if err != nil {
 		return nil, err
