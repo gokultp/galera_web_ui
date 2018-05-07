@@ -11,7 +11,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = api.Listen(":8000")
+	err = api.Listen(":80")
 	if err != nil {
 		fmt.Println(err)
 	}
