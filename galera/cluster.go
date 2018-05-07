@@ -78,7 +78,11 @@ func (c *Cluster) AddNode(name string) error {
 	if len(c.Nodes) > 0 {
 		return node.CreateNode(c.Client, c.Nodes[0].IP)
 	}
-	return node.CreateNode(c.Client, "")
+	err := node.CreateNode(c.Client, "")
+	if err != nil {
+		return err
+	}
+	return c.GetCluster()
 
 }
 
