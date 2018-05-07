@@ -204,6 +204,8 @@ class App extends Component {
 						</div>
 					</div>
 					<div className='status'>
+						<h3>Cluster Status</h3>
+						<Button onClick={this.getStatus.bind(this)}>Reload</Button>
 						<table>
 							<tr> 
 								{this.state.status.columns.map((column, i)=>(
