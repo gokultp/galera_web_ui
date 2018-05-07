@@ -41,6 +41,13 @@ https://docs.docker.com/install/linux/docker-ce/ubuntu/
 ## Running the app
 
 ```
+# pull the docker image of galera cluster before executing
+$ sudo docker pull erkules/galera
+
+# traverse to the directory
+$ cd $GOPATH/src/github.com/gokultp/galera_web_ui
+
+
 # sudo is needed since we are using Docker APIS
 $ sudo go run main.go
 ```
